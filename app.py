@@ -1,4 +1,6 @@
 from openai_utils import get_response
+from api_utils import fetch_reddit_comments, extract_youtube_transcript, fetch_page_content, search_web
+from rag_utils import retrieve_top_chunks, chunk_and_vectorize
 
 import streamlit as st
 
@@ -21,7 +23,8 @@ with st.sidebar:
     st.write(
         "- *Where do I find the best armor in Elden Ring?*\n"
         "- *How do I solve the temple puzzle in Zelda TOTK?*\n"
-        "- *Fastest way to level up in Skyrim?*"
+        "- *Fastest way to level up in Skyrim?*\n"
+        "- *Where to find gold bars in RDR2?*"
     )
 
     st.info("Try asking a question in the chat!")
@@ -62,6 +65,8 @@ for message in st.session_state.messages:
 
 # User input
 if user_input := st.chat_input("Ask a question..."):
+    urls = search_web(user_input)
+
     st.session_state.messages.append({"role": "user", "content": user_input})
 
     with st.chat_message("user"):
@@ -70,10 +75,31 @@ if user_input := st.chat_input("Ask a question..."):
     with st.chat_message("assistant"):
         try:
             with st.spinner("Searching the Web for relevant sources..."):
-                data_frm_the_web = "" # will add logic to get context later
+                data_frm_the_web = []
+                for url in urls:
+                    if "reddit.com" in url:
+                        print("\nFetching from Reddit:", url)
+                        extracted_data = fetch_reddit_comments(url)
+
+                    elif "youtube.com" in url:
+                        print("\nFetching from Youtube:", url)
+                        extracted_data = extract_youtube_transcript(url)
+
+                    else:
+                        print("\nScraping website:", url)
+                        extracted_data = fetch_page_content(url)
+
+                    title, content = extracted_data['title'], extracted_data['content']
+                    data_frm_the_web.append({
+                        "source_url": url,
+                        "title": title,
+                        "content": content
+                    })
+
             
             with st.spinner("Processsing collected data and Generating Response..."):
-                context = "" # will add logic to get context later
+                df = chunk_and_vectorize(data_frm_the_web)
+                context = retrieve_top_chunks(user_input, df)
 
                 # Generate a response using the context
                 response_message = get_response(

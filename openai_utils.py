@@ -1,5 +1,4 @@
 import os
-import numpy as np
 
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -19,6 +18,3 @@ def get_response(question):
         messages=question,
     )
     return completion.choices[0].message
-
-def cosine_similarity(a, b):
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
