@@ -108,28 +108,6 @@ def fetch_reddit_comments(post_url):
     except Exception as e:
         return {"title" : "", "content": str(e), "restricted" : post_url}
 
-def fetch_reddit_comments(post_url, num_comments=5):
-    """Fetches the main post + top comments from a Reddit thread."""
-    try:
-        submission = reddit.submission(url=post_url)
-
-        # Extract main post
-        post_data = {
-            "title": submission.title,
-            "content": submission.selftext,
-            "restricted": ""
-        }
-
-        # Extract top N comments (sorted by upvotes)
-        submission.comments.replace_more(limit=0)  # Remove "load more comments" placeholders
-        for top_comment in submission.comments[:num_comments]:
-            post_data["content"] += f"\n{top_comment.body}"
-
-        return post_data
-
-    except Exception as e:
-        return {"title" : "", "content": str(e), "restricted" : post_url}
-
 def format_timestamp(seconds):
     """Convert seconds into MM:SS format"""
     minutes = int(seconds // 60)

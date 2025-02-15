@@ -31,3 +31,7 @@ The Video Game Assistant is a Streamlit-based AI tool designed to help gamers qu
 5. Google Search API – Fetches relevant web sources.
 6. YouTube Transcript API - To retrieve Youtube transcripts with timestamps
 7. Reddit API - To retrive post, comments and replied from Reddit Discussions.
+
+## Future Improvements
+1. Support for follow-up questions. Example: If they ask, "How to complete Cornwall oil mission?" and then "What happens if I choose a different path?"
+2. Scrape and embed website images. (Generally maps would be useful)
