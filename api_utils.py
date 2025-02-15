@@ -1,6 +1,6 @@
 import requests
 import os
-
+import chromadb
 from bs4 import BeautifulSoup
 from readability import Document
 import praw
@@ -17,7 +17,26 @@ REDDIT_USER_AGENT = "test"
 API_KEY = os.getenv("GOOGLE_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 
+# Initialize ChromaDB client
+chroma_client = chromadb.PersistentClient(path="./chroma_db")  # Persistent storage
 
+# Create (or get) a collection for game sources
+collection = chroma_client.get_or_create_collection(name="game_sources")
+
+def check_existing_sources(url):
+    # Fetch stored metadata for existing documents
+    existing_metadata = collection.get(include=["metadatas"])
+
+    # Extract all stored source URLs from metadata
+    stored_source_urls = {meta["source_url"] for meta in existing_metadata["metadatas"] if "source_url" in meta}
+
+    # Check if the document is already stored
+    if url in stored_source_urls:
+        print(f"Skipping {url}, already extracted andembedded.")
+        return None
+    else:
+        return url
+    
 def search_web(query, num_results=5):
     """Fetches top search results for a given query."""
     
@@ -28,10 +47,13 @@ def search_web(query, num_results=5):
 
     response = requests.get(search_url)
     # response_youtube = requests.get(search_url_youtube)
-    
+    urls = []
     if response.status_code == 200:
         results = response.json()
-        urls = [item["link"] for item in results.get("items", [])[:num_results]]
+        for item in results.get("items", [])[:num_results]:
+            url = item["link"]
+            if check_existing_sources(url):
+                urls.append(url)
     else:
         print("Failed to fetch search results.")
 

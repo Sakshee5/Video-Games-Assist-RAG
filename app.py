@@ -1,6 +1,7 @@
 from openai_utils import get_response
 from api_utils import fetch_reddit_comments, extract_youtube_transcript, fetch_page_content, search_web
-from rag_utils import retrieve_top_chunks, chunk_and_vectorize
+# from rag_utils import retrieve_top_chunks, chunk_and_vectorize
+from rag_utils_chromadb import retrieve_top_chunks, chunk_and_vectorize
 
 import streamlit as st
 
@@ -8,12 +9,12 @@ with st.sidebar:
     st.header("🎮 Game Assistant Guide")
     
     st.write(
-        "Welcome to the Open-World Game Assistant! This tool helps you find quick answers for open-world games by retrieving data from YouTube, forums, and guides."
+        "Welcome to the Video Game Assistant! This tool helps you find quick answers for video games by retrieving data from YouTube, forums, and guides."
     )
 
     st.subheader("⚡ How It Works")
     st.write(
-        "- **Ask any question** related to open-world games.\n"
+        "- **Ask any question** related to any video games.\n"
         "- The assistant searches for **relevant gameplay info**.\n"
         "- If available, it provides **exact video timestamps** or summarizes key solutions.\n"
         "- Sources include **YouTube, web sources, forums, and guides**."
@@ -29,7 +30,7 @@ with st.sidebar:
 
     st.info("Try asking a question in the chat!")
 
-st.header("🎮 Open-World Game Assist")
+st.header("🎮 Video Game Assist")
 
 
 sys_prompt = """You are an expert Video Game Assistant.
@@ -39,8 +40,6 @@ Your job is to help users solve challenges they encounter in these games by prov
 
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "system", "content": sys_prompt}]
-
-
 
 # Display chat messages from session state
 for message in st.session_state.messages:
@@ -88,8 +87,10 @@ if user_input := st.chat_input("Ask a question..."):
 
             
             with st.spinner("Processsing collected data and Generating Response..."):
-                df = chunk_and_vectorize(data_frm_the_web)
-                context = retrieve_top_chunks(user_input, df)
+                # df = chunk_and_vectorize(data_frm_the_web)
+                # context = retrieve_top_chunks(user_input, df)
+                chunk_and_vectorize(data_frm_the_web)
+                context = retrieve_top_chunks(user_input)
 
                 user_prompt = f"""Possibly Relevant URLs that could not be scraped (if any):
 ------------------------------
