@@ -14,7 +14,7 @@ def get_embedding(text):
 
 def get_response(question):
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=question,
     )
     return completion.choices[0].message
