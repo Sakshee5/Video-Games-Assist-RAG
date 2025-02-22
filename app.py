@@ -29,6 +29,7 @@ with st.sidebar:
     )
 
     st.info("Try asking a question in the chat!")
+    st.error("Disclaimer: A random non-game based question will also work but the prompts have been curated for Video Game Questions..")
 
 st.header("🎮 Video Game Assist")
 
