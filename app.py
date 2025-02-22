@@ -1,7 +1,5 @@
 from openai_utils import get_response
 from api_utils import fetch_reddit_comments, extract_youtube_transcript, fetch_page_content, search_web
-# from rag_utils import retrieve_top_chunks, chunk_and_vectorize
-# from rag_utils_chromadb import retrieve_top_chunks, chunk_and_vectorize
 from rag_utils_faiss import retrieve_top_chunks, chunk_and_vectorize
 
 import streamlit as st
@@ -89,8 +87,6 @@ if user_input := st.chat_input("Ask a question..."):
 
             
             with st.spinner("Processsing collected data and Generating Response..."):
-                # df = chunk_and_vectorize(data_frm_the_web)
-                # context = retrieve_top_chunks(user_input, df)
                 chunk_and_vectorize(data_frm_the_web)
                 context = retrieve_top_chunks(user_input)
 

@@ -1,6 +1,5 @@
 import requests
 import os
-# import chromadb
 from bs4 import BeautifulSoup
 from readability import Document
 import praw
@@ -17,26 +16,6 @@ REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
 REDDIT_USER_AGENT = "test"
 API_KEY = os.getenv("GOOGLE_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
-
-# # Initialize ChromaDB client
-# chroma_client = chromadb.PersistentClient(path="./chroma_db")  # Persistent storage
-
-# # Create (or get) a collection for game sources
-# collection = chroma_client.get_or_create_collection(name="game_sources")
-
-# def check_existing_sources(url):
-#     # Fetch stored metadata for existing documents
-#     existing_metadata = collection.get(include=["metadatas"])
-
-#     # Extract all stored source URLs from metadata
-#     stored_source_urls = {meta["source_url"] for meta in existing_metadata["metadatas"] if "source_url" in meta}
-
-#     # Check if the document is already stored
-#     if url in stored_source_urls:
-#         print(f"Skipping {url}, already extracted andembedded.")
-#         return None
-#     else:
-#         return url
 
 metadata_path = "faiss_metadata.pkl"
 
@@ -61,11 +40,7 @@ def search_web(query, num_results=5):
     
     search_url = f"https://www.googleapis.com/customsearch/v1?q={query}&key={API_KEY}&cx={SEARCH_ENGINE_ID}"
 
-    # For YouTube
-    # search_url_youtube = f"https://www.googleapis.com/customsearch/v1?q={query} site:youtube.com&key={API_KEY}&cx={SEARCH_ENGINE_ID}"
-
     response = requests.get(search_url)
-    # response_youtube = requests.get(search_url_youtube)
     urls = []
     if response.status_code == 200:
         results = response.json()
@@ -76,13 +51,6 @@ def search_web(query, num_results=5):
     else:
         print("Failed to fetch search results.")
 
-    # if response_youtube.status_code == 200:
-    #     results = response_youtube.json()
-    #     youtube_urls = [item["link"] for item in results.get("items", [])[:num_results]]
-    # else:
-    #     print("Failed to fetch YouTube search results.")
-
-    # return urls + youtube_urls
     return urls
 
     

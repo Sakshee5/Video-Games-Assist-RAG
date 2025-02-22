@@ -18,7 +18,7 @@ The Video Game Assistant is a Streamlit-based AI tool designed to help gamers qu
 1. Enter a video game-related question in the chat.
 2. The system searches the web for relevant sources.
 3. It fetches content from Reddit, YouTube, and other web pages.
-4. The tool chunks and vectorizes the content using ChromaDB.
+4. The tool chunks and vectorizes the content using FAISS.
 5. It retrieves the most relevant text and generates a summarized response.
 6. If the data is restricted, it provides direct URLs for users to check manually.
 
