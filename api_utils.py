@@ -1,11 +1,12 @@
 import requests
 import os
-import chromadb
+# import chromadb
 from bs4 import BeautifulSoup
 from readability import Document
 import praw
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import urlparse, parse_qs
+import pickle
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -17,25 +18,43 @@ REDDIT_USER_AGENT = "test"
 API_KEY = os.getenv("GOOGLE_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 
-# Initialize ChromaDB client
-chroma_client = chromadb.PersistentClient(path="./chroma_db")  # Persistent storage
+# # Initialize ChromaDB client
+# chroma_client = chromadb.PersistentClient(path="./chroma_db")  # Persistent storage
 
-# Create (or get) a collection for game sources
-collection = chroma_client.get_or_create_collection(name="game_sources")
+# # Create (or get) a collection for game sources
+# collection = chroma_client.get_or_create_collection(name="game_sources")
+
+# def check_existing_sources(url):
+#     # Fetch stored metadata for existing documents
+#     existing_metadata = collection.get(include=["metadatas"])
+
+#     # Extract all stored source URLs from metadata
+#     stored_source_urls = {meta["source_url"] for meta in existing_metadata["metadatas"] if "source_url" in meta}
+
+#     # Check if the document is already stored
+#     if url in stored_source_urls:
+#         print(f"Skipping {url}, already extracted andembedded.")
+#         return None
+#     else:
+#         return url
+
+metadata_path = "faiss_metadata.pkl"
+
+# Load metadata storage
+if os.path.exists(metadata_path):
+    with open(metadata_path, "rb") as f:
+        metadata_store = pickle.load(f)
+else:
+    metadata_store = {}
 
 def check_existing_sources(url):
-    # Fetch stored metadata for existing documents
-    existing_metadata = collection.get(include=["metadatas"])
-
-    # Extract all stored source URLs from metadata
-    stored_source_urls = {meta["source_url"] for meta in existing_metadata["metadatas"] if "source_url" in meta}
-
-    # Check if the document is already stored
-    if url in stored_source_urls:
-        print(f"Skipping {url}, already extracted andembedded.")
+    """Check if a URL is already stored in FAISS metadata."""
+    if any(meta["source_url"] == url for meta in metadata_store.values()):
+        print(f"Skipping {url}, already extracted and embedded.")
         return None
     else:
         return url
+
     
 def search_web(query, num_results=5):
     """Fetches top search results for a given query."""
