@@ -30,6 +30,33 @@ with st.sidebar:
     st.info("Try asking a question in the chat!")
     st.error("Disclaimer: A random non-game based question will also work but the prompts have been curated for Video Game Questions..")
 
+    st.divider()
+
+    st.subheader("📚 Data Sources")
+    st.write(
+        "- **YouTube walkthroughs & guides** (retrieved via API & search)\n"
+        "- **Reddit discussions & gaming forums**\n"
+        "- **Game wikis and online guides**"
+    )
+
+    st.subheader("🔄 Pipeline")
+    st.write(
+        "1. **User Input**: Player asks a game-related question.\n"
+        "2. **Web Scraping & Retrieval**: Searches YouTube, Reddit, and forums for relevant content. Top 10 URLs are scraped.\n"
+        "3. **Text Processing**: Extracts key text from videos (timestamps), forums, and guides.\n"
+        "4. **FAISS Vector Search**: Stores processed text embeddings for quick retrieval.\n"
+        "5. **LLM Response Generation**: Uses OpenAI language model to summarize and provide a direct answer.\n"
+        "6. **Final Output**: Displays the best response with sources (including video timestamps if available)."
+    )
+
+    st.subheader("🤖 Model & Tech Stack")
+    st.write(
+        "- **Embedding Model**: `text-embedding-3-small` by OpenAI\n"
+        "- **Vector Database**: `FAISS` for efficient similarity search\n"
+        "- **LLM**: OpenAI `gpt-4o-mini` for answer generation\n"
+        "- **Scraping**: `BeautifulSoup` and `Requests`, `YouTube Transcript API`, `Praw` Reddit API for content retrieval\n"
+        "- **Deployment**: Streamlit for frontend, Python backend"
+    )
 st.header("🎮 Video Game Assist")
 
 
@@ -107,7 +134,7 @@ Context from Scraped URLS:
 
 Based on the context provided above, summarize the solution in 1-3 sentences. Always provide source links AS-IS. Incase context contains YouTube Video content with embedded timestamps, also provide the exact timestamp (e.g., 3:45 - 5:10) where the youtuber explains the solution and what it is.
 
-If the provided context does not contain enough information to answer the question, clearly state that and provide the user possible Relevant URLs that could not be scraped to check manually.
+If the provided context does not contain enough information to answer the question, clearly state that and provide the user possible Relevant URLs that could not be scraped to check manually. Ensure the answer is nicely structured and presented for ease of reading and understanding.
 
 Question: 
 ------------------------------
