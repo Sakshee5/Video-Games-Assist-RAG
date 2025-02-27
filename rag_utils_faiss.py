@@ -10,9 +10,8 @@ token_per_chunk = 2000
 faiss_index_path = "faiss_index.bin"
 metadata_path = "faiss_metadata.pkl"
 
-# Initialize FAISS index (L2 distance, can use IndexFlatIP for cosine similarity)
 embedding_dim = 1536 
-index = faiss.IndexFlatL2(embedding_dim)
+index = faiss.IndexFlatIP(embedding_dim)
 
 # Load metadata storage
 if os.path.exists(metadata_path):
@@ -37,7 +36,7 @@ def reset_metadata_and_index():
     with open(metadata_path, "wb") as f:
         pickle.dump(metadata_store, f)
     print("Metadata and index have been reset.")
-    
+
 def chunk_text(text, max_tokens=token_per_chunk):
     """Splits text into chunks with a maximum token limit."""
     enc = tiktoken.encoding_for_model("text-embedding-3-small") 
