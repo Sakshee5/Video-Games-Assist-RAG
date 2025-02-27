@@ -11,7 +11,7 @@ faiss_index_path = "faiss_index.bin"
 metadata_path = "faiss_metadata.pkl"
 
 embedding_dim = 1536 
-index = faiss.IndexFlatIP(embedding_dim)
+index = faiss.IndexFlatL2(embedding_dim)
 
 # Load metadata storage
 if os.path.exists(metadata_path):
