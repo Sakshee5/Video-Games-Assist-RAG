@@ -17,7 +17,7 @@ API_KEY = os.getenv("GOOGLE_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 
     
-def search_web(query, num_results=10):
+def search_web(query, num_results=5):
     """Fetches top search results for a given query."""
     
     search_url = f"https://www.googleapis.com/customsearch/v1?q={query}&key={API_KEY}&cx={SEARCH_ENGINE_ID}"

@@ -1,5 +1,8 @@
 # 🎮 Video Game Assistant Guide
 
+## Deployed App: 
+[Link](https://video-games-assist-rag-fppjy4z7yvzdue5yrzpluq.streamlit.app/)
+
 ## Overview
 
 The Video Game Assistant is a Streamlit-based AI tool designed to help gamers quickly find solutions to in-game challenges. It retrieves data from YouTube, forums, and web guides, prioritizes sources based on RAG and provides accurate and actionable answers, including video timestamps for Youtube Sources.
