@@ -23,8 +23,21 @@ else:
 
 # Load FAISS index if it exists
 if os.path.exists(faiss_index_path):
-    faiss.read_index(faiss_index_path)
+    index = faiss.read_index(faiss_index_path)
 
+
+def reset_metadata_and_index():
+    """Reset the metadata store and FAISS index."""
+    global metadata_store, index
+    metadata_store = {}
+    index = faiss.IndexFlatL2(embedding_dim)
+    
+    # Save empty structures
+    faiss.write_index(index, faiss_index_path)
+    with open(metadata_path, "wb") as f:
+        pickle.dump(metadata_store, f)
+    print("Metadata and index have been reset.")
+    
 def chunk_text(text, max_tokens=token_per_chunk):
     """Splits text into chunks with a maximum token limit."""
     enc = tiktoken.encoding_for_model("text-embedding-3-small") 
@@ -70,6 +83,10 @@ def chunk_and_vectorize(data):
 
 def retrieve_top_chunks(question, top_n=2):
     """Retrieve top N most relevant chunks for a question using FAISS."""
+    global index
+    if index.ntotal == 0:
+        return "No data available in the index. Please add some content first."
+    
     question_embedding = get_embedding(question)
     question_np = np.array([question_embedding], dtype=np.float32)
 

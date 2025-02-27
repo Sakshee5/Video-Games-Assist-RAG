@@ -5,7 +5,6 @@ from readability import Document
 import praw
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import urlparse, parse_qs
-import pickle
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -17,25 +16,8 @@ REDDIT_USER_AGENT = "test"
 API_KEY = os.getenv("GOOGLE_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 
-metadata_path = "faiss_metadata.pkl"
-
-# Load metadata storage
-if os.path.exists(metadata_path):
-    with open(metadata_path, "rb") as f:
-        metadata_store = pickle.load(f)
-else:
-    metadata_store = {}
-
-def check_existing_sources(url):
-    """Check if a URL is already stored in FAISS metadata."""
-    if any(meta["source_url"] == url for meta in metadata_store.values()):
-        print(f"Skipping {url}, already extracted and embedded.")
-        return None
-    else:
-        return url
-
     
-def search_web(query, num_results=5):
+def search_web(query, num_results=10):
     """Fetches top search results for a given query."""
     
     search_url = f"https://www.googleapis.com/customsearch/v1?q={query}&key={API_KEY}&cx={SEARCH_ENGINE_ID}"
@@ -46,8 +28,7 @@ def search_web(query, num_results=5):
         results = response.json()
         for item in results.get("items", [])[:num_results]:
             url = item["link"]
-            if check_existing_sources(url):
-                urls.append(url)
+            urls.append(url)
     else:
         print("Failed to fetch search results.")
 
